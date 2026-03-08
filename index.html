@@ -627,36 +627,6 @@
   </div>
 </div>
 
-<!-- MANUAL INSTALL (for humans) -->
-<section id="manual-install" style="padding: 60px 0;">
-  <div class="container">
-    <div class="section-label">Manual install</div>
-    <h2>Prefer to do it yourself?</h2>
-
-    <div class="terminal" style="max-width: 700px;">
-      <div class="terminal-header" style="position: relative;">
-        <div class="terminal-dots">
-          <div class="terminal-dot"></div>
-          <div class="terminal-dot"></div>
-          <div class="terminal-dot"></div>
-        </div>
-        <span class="terminal-title">visamcp.sh</span>
-        <button class="terminal-copy" onclick="copyManualInstall(this)">Copy</button>
-      </div>
-      <div class="terminal-body">
-        <code><span class="prompt-symbol">$ </span><span class="cmd">git clone https://github.com/GannonCombs/Gannon-mcp.git</span>
-<span class="prompt-symbol">$ </span><span class="cmd">cd Gannon-mcp && npm install && npm run build && npm link</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp init</span>
-<span class="output">  Wallet address: 0x...a4f2</span>
-<span class="success">  ✓ Ready</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span>
-<span class="success">  ✓ MCP server registered with Claude Code</span>
-<span class="prompt-symbol">$ </span><span class="cursor"></span></code>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- WHAT AGENTS CAN PAY FOR -->
 <section id="capabilities">
   <div class="container">
@@ -664,10 +634,6 @@
     <h2>Pay for anything. Programmatically.</h2>
 
     <div class="cap-grid">
-      <div class="cap-card">
-        <h3><span class="cap-icon">⬡</span> x402 Endpoints</h3>
-        <p>Auto-pay any HTTP endpoint that returns 402. USDC on Base, zero friction.</p>
-      </div>
       <div class="cap-card">
         <h3><span class="cap-icon">◈</span> Image Generation</h3>
         <p>Pay for image gen APIs on demand. Generate assets without pre-funded accounts.</p>
@@ -681,20 +647,16 @@
         <p>Pay-per-call inference APIs. No API keys, no subscriptions, just pay and call.</p>
       </div>
       <div class="cap-card">
-        <h3><span class="cap-icon">◉</span> Hosting & Compute</h3>
-        <p>Provision servers, deploy containers, buy compute time with a single payment.</p>
-      </div>
-      <div class="cap-card">
         <h3><span class="cap-icon">◎</span> Domain Names</h3>
         <p>Register and manage domains. Agent handles purchase, DNS, and renewal.</p>
       </div>
       <div class="cap-card">
-        <h3><span class="cap-icon">◧</span> Proprietary Datasets</h3>
-        <p>Access paid data feeds. Market data, analytics, research, behind paywalls.</p>
+        <h3><span class="cap-icon">◉</span> Hosting & Compute</h3>
+        <p>Provision servers, deploy containers, buy compute time with a single payment.</p>
       </div>
       <div class="cap-card">
-        <h3><span class="cap-icon">▤</span> Any Visa Merchant</h3>
-        <p>If it accepts Visa online, your agent can pay for it. Cards work everywhere.</p>
+        <h3><span class="cap-icon">◧</span> Proprietary Datasets</h3>
+        <p>Access paid data feeds. Market data, analytics, research, behind paywalls.</p>
       </div>
     </div>
   </div>
@@ -1020,14 +982,6 @@ function copyPrompt(btn) {
   });
 }
 
-function copyManualInstall(btn) {
-  const text = `git clone https://github.com/GannonCombs/Gannon-mcp.git && cd Gannon-mcp && npm install && npm run build && npm link
-visa-mcp init && visa-mcp install claude`;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Copied';
-    setTimeout(() => btn.textContent = 'Copy', 2000);
-  });
-}
 
 function copyCLI(btn) {
   const text = `# Setup
