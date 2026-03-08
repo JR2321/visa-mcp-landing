@@ -586,7 +586,54 @@
     <h1>Visa is here to power the future of command line commerce.</h1>
     <p>One MCP server. Every payment rail. Cards, USDC, x402, Tempo. Give your agent the ability to pay for anything online.</p>
 
-    <div class="terminal" style="margin-top: 40px; max-width: 700px;">
+    <p style="margin-top: 40px; margin-bottom: 12px; font-size: 12px; color: var(--text-dim); letter-spacing: 0.5px;">Copy the prompt below and paste into your agent.</p>
+
+    <div class="prompt-box" style="max-width: 700px;">
+      <div class="terminal">
+        <div class="terminal-header" style="position: relative;">
+          <div class="terminal-dots">
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+          </div>
+          <span class="terminal-title">install</span>
+          <button class="terminal-copy" onclick="copyPrompt(this)">Copy</button>
+        </div>
+        <div class="terminal-body" style="padding: 24px;">
+          <code style="font-size: 15px; line-height: 1.6;"><span class="cmd">Read https://visamcp.sh/skills/skill.md and install it.</span></code>
+        </div>
+      </div>
+    </div>
+
+    <div class="install-steps" style="margin-top: 32px; max-width: 700px;">
+      <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 180px;">
+          <div style="font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 8px;">1</div>
+          <h3 style="font-size: 13px; margin-bottom: 4px;">Paste the prompt</h3>
+          <p style="font-size: 12px;">Into Claude Code, OpenClaw, or any MCP-compatible agent.</p>
+        </div>
+        <div style="flex: 1; min-width: 180px;">
+          <div style="font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 8px;">2</div>
+          <h3 style="font-size: 13px; margin-bottom: 4px;">Agent installs itself</h3>
+          <p style="font-size: 12px;">Reads the skill, clones the repo, builds, initializes wallet, registers MCP.</p>
+        </div>
+        <div style="flex: 1; min-width: 180px;">
+          <div style="font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 8px;">3</div>
+          <h3 style="font-size: 13px; margin-bottom: 4px;">Pay for anything</h3>
+          <p style="font-size: 12px;">10 payment tools. Cards, USDC, x402, Tempo. Every rail, one server.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MANUAL INSTALL (for humans) -->
+<section id="manual-install" style="padding: 60px 0;">
+  <div class="container">
+    <div class="section-label">Manual install</div>
+    <h2>Prefer to do it yourself?</h2>
+
+    <div class="terminal" style="max-width: 700px;">
       <div class="terminal-header" style="position: relative;">
         <div class="terminal-dots">
           <div class="terminal-dot"></div>
@@ -594,7 +641,7 @@
           <div class="terminal-dot"></div>
         </div>
         <span class="terminal-title">visamcp.sh</span>
-        <button class="terminal-copy" onclick="copyInstall(this)">Copy</button>
+        <button class="terminal-copy" onclick="copyManualInstall(this)">Copy</button>
       </div>
       <div class="terminal-body">
         <code><span class="prompt-symbol">$ </span><span class="cmd">git clone https://github.com/GannonCombs/Gannon-mcp.git</span>
@@ -608,7 +655,7 @@
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- WHAT AGENTS CAN PAY FOR -->
 <section id="capabilities">
@@ -820,11 +867,11 @@
   </div>
 </section>
 
-<!-- INSTALL -->
+<!-- WORKS WITH -->
 <section id="install">
   <div class="container">
-    <div class="section-label">Install</div>
-    <h2>Two paths. Same result.</h2>
+    <div class="section-label">Works with</div>
+    <h2>Any MCP-compatible agent.</h2>
 
     <div class="install-grid">
       <div class="install-card">
@@ -832,12 +879,10 @@
           <h3>Claude Code</h3>
         </div>
         <div class="install-card-body">
-          <code><span class="prompt-symbol">$ </span><span class="cmd">git clone https://github.com/GannonCombs/Gannon-mcp.git</span>
-<span class="prompt-symbol">$ </span><span class="cmd">cd Gannon-mcp</span>
-<span class="prompt-symbol">$ </span><span class="cmd">npm install && npm run build && npm link</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp init</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span>
-<span class="success">  ✓ Done. Restart Claude Code.</span></code>
+          <code><span class="cmd">Read https://visamcp.sh/skills/skill.md and install it.</span>
+
+<span class="comment"># or manually:</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span></code>
         </div>
       </div>
       <div class="install-card">
@@ -845,12 +890,10 @@
           <h3>OpenClaw</h3>
         </div>
         <div class="install-card-body">
-          <code><span class="prompt-symbol">$ </span><span class="cmd">git clone https://github.com/GannonCombs/Gannon-mcp.git</span>
-<span class="prompt-symbol">$ </span><span class="cmd">cd Gannon-mcp</span>
-<span class="prompt-symbol">$ </span><span class="cmd">npm install && npm run build && npm link</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp init</span>
-<span class="prompt-symbol">$ </span><span class="cmd">openclaw mcp add visa-mcp</span>
-<span class="success">  ✓ Done. Agent has payment tools.</span></code>
+          <code><span class="cmd">Read https://visamcp.sh/skills/skill.md and install it.</span>
+
+<span class="comment"># or manually:</span>
+<span class="prompt-symbol">$ </span><span class="cmd">openclaw mcp add visa-mcp</span></code>
         </div>
       </div>
     </div>
@@ -969,7 +1012,15 @@ window.addEventListener('resize', buildWordColumns);
 </script>
 
 <script>
-function copyInstall(btn) {
+function copyPrompt(btn) {
+  const text = 'Read https://visamcp.sh/skills/skill.md and install it.';
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+function copyManualInstall(btn) {
   const text = `git clone https://github.com/GannonCombs/Gannon-mcp.git && cd Gannon-mcp && npm install && npm run build && npm link
 visa-mcp init && visa-mcp install claude`;
   navigator.clipboard.writeText(text).then(() => {
