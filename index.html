@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visa MCP — Command Line Commerce</title>
+<meta name="description" content="Visa is here to power the future of command line commerce. Cards, stablecoins, x402. One MCP server, every payment rail.">
+<link rel="agent" href="/agent.txt">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #000000;
+    --bg-elevated: #0a0a0a;
+    --bg-terminal: #111111;
+    --border: #222222;
+    --border-light: #333333;
+    --text: #e0e0e0;
+    --text-dim: #888888;
+    --text-bright: #ffffff;
+    --accent: #ffffff;
+    --green: #4afa82;
+    --cursor: #e0e0e0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: var(--text-bright);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-light);
+    transition: border-color 0.2s;
+  }
+  a:hover {
+    border-color: var(--text-bright);
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: none;
+  }
+
+  .nav-brand svg {
+    height: 20px;
+    width: auto;
+  }
+
+  .nav-brand-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .nav-link {
+    font-size: 13px;
+    color: var(--text-dim);
+    border: none;
+    transition: color 0.2s;
+  }
+  .nav-link:hover {
+    color: var(--text-bright);
+    border: none;
+  }
+
+  .agent-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--bg-terminal);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .agent-btn:hover {
+    background: var(--border);
+    border-color: var(--text-dim);
+    color: var(--text-bright);
+  }
+
+  .agent-btn .prompt {
+    color: var(--text-dim);
+  }
+
+  /* ---- LAYOUT ---- */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section {
+    padding: 80px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  section:last-of-type {
+    border-bottom: none;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--text-bright);
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text-bright);
+    margin-bottom: 32px;
+  }
+
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--text-dim);
+    max-width: 600px;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    padding-top: 140px;
+    padding-bottom: 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero h1 {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  .hero p {
+    font-size: 15px;
+    margin-bottom: 40px;
+  }
+
+  /* ---- TERMINAL ---- */
+  .terminal {
+    background: var(--bg-terminal);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .terminal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-light);
+  }
+
+  .terminal-title {
+    font-size: 11px;
+    color: var(--text-dim);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .terminal-copy {
+    font-size: 11px;
+    color: var(--text-dim);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .terminal-copy:hover {
+    color: var(--text);
+    border-color: var(--border-light);
+  }
+
+  .terminal-body {
+    padding: 20px;
+    overflow-x: auto;
+  }
+
+  .terminal-body code {
+    display: block;
+    white-space: pre;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .prompt-symbol {
+    color: var(--text-dim);
+    user-select: none;
+  }
+
+  .cmd {
+    color: var(--text-bright);
+  }
+
+  .comment {
+    color: #555;
+  }
+
+  .output {
+    color: var(--text-dim);
+  }
+
+  .success {
+    color: var(--green);
+  }
+
+  /* ---- CAPABILITIES GRID ---- */
+  .cap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .cap-card {
+    background: var(--bg);
+    padding: 24px;
+  }
+
+  .cap-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .cap-icon {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    color: var(--text-dim);
+  }
+
+  .cap-card p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+
+  /* ---- TOOLS LIST ---- */
+  .tool-item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tool-item:last-child {
+    border-bottom: none;
+  }
+
+  .tool-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-bright);
+    font-family: inherit;
+  }
+
+  .tool-params {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .tool-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 8px;
+    max-width: 100%;
+  }
+
+  /* ---- RAILS ---- */
+  .rail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .rail-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .rail-card h3 {
+    margin-bottom: 6px;
+  }
+
+  .rail-card p {
+    font-size: 12px;
+  }
+
+  /* ---- INSTALL SECTION ---- */
+  .install-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 640px) {
+    .install-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .install-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .install-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .install-card-header h3 {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .install-card-body {
+    padding: 20px;
+  }
+
+  .install-card-body code {
+    display: block;
+    font-size: 12px;
+    line-height: 1.8;
+    white-space: pre;
+    color: var(--text);
+  }
+
+  /* ---- ARCHITECTURE ---- */
+  .arch-diagram {
+    background: var(--bg-terminal);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-dim);
+  }
+
+  .arch-diagram pre {
+    white-space: pre;
+    font-family: inherit;
+  }
+
+  /* ---- SECURITY ---- */
+  .sec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .sec-item {
+    background: var(--bg);
+    padding: 20px;
+  }
+
+  .sec-item .label {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .sec-item .value {
+    font-size: 13px;
+    color: var(--text-bright);
+    font-weight: 500;
+  }
+
+  /* ---- FOOTER ---- */
+  footer {
+    padding: 40px 0;
+    text-align: center;
+  }
+
+  footer p {
+    font-size: 12px;
+    color: var(--text-dim);
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  footer a {
+    color: var(--text-dim);
+    border-bottom-color: var(--border);
+  }
+
+  footer .brand {
+    margin-bottom: 12px;
+  }
+
+  footer .brand svg {
+    height: 16px;
+    opacity: 0.4;
+  }
+
+  /* ---- CURSOR BLINK ---- */
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: var(--cursor);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 24px; }
+    .terminal-body { padding: 16px; }
+    .terminal-body code { font-size: 11px; }
+    nav { padding: 0 16px; }
+    .container { padding: 0 16px; }
+    section { padding: 60px 0; }
+    .cap-grid { grid-template-columns: 1fr; }
+    .nav-link.desktop-only { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-brand">
+    <svg viewBox="0 0 1000 324" fill="white" xmlns="http://www.w3.org/2000/svg">
+      <path d="M413.63 2.36L311.68 321.48H252.09L150.15 2.36H215.89L282.88 237.7L351.11 2.36H413.63ZM444.47 321.48V2.36H500.88V321.48H444.47ZM684.05 68.87C671.48 55.06 649.56 42.49 623.96 42.49C591.88 42.49 573.63 59.49 573.63 79.23C573.63 102.16 599.22 112.23 629.07 123.31C672.49 139.3 722.84 157.55 722.84 214.97C722.84 277.05 672.73 326.16 600.96 326.16C554.49 326.16 511.07 308.41 480.22 275.33L519.46 234.84C534.44 251.34 561.29 271.58 601.96 271.58C634.04 271.58 658.39 254.08 658.39 229.49C658.39 204.39 630.04 192.82 598.22 181.24C555.99 165.26 508.83 146.26 508.83 91.85C508.83 35.69 553.49 -2.31 622.47 -2.31C664.89 -2.31 702.1 14.19 726.49 39.28L684.05 68.87ZM856.48 221.92H809.82L791.07 321.48H731.48L833.41 2.36H893.01L994.94 321.48H935.36L916.6 221.92H856.48ZM906.33 176.45L886.84 75.02L867.34 176.45H906.33Z"/>
+    </svg>
+    <span class="nav-brand-text">CRYPTO LABS</span>
+  </a>
+  <div class="nav-right">
+    <a href="#tools" class="nav-link desktop-only">Tools</a>
+    <a href="#install" class="nav-link desktop-only">Install</a>
+    <a href="https://github.com/GannonCombs/Gannon-mcp" class="nav-link desktop-only">GitHub</a>
+    <a href="/agent.txt" class="agent-btn"><span class="prompt">$</span> cat agent.txt</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <h1>Visa is here to power the future of command line commerce.</h1>
+    <p>One MCP server. Every payment rail. Cards, USDC, x402, Tempo. Give your agent the ability to pay for anything online.</p>
+
+    <div class="terminal" style="margin-top: 40px; max-width: 700px;">
+      <div class="terminal-header" style="position: relative;">
+        <div class="terminal-dots">
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+        </div>
+        <span class="terminal-title">visamcp.sh</span>
+        <button class="terminal-copy" onclick="copyInstall(this)">Copy</button>
+      </div>
+      <div class="terminal-body">
+        <code><span class="prompt-symbol">$ </span><span class="cmd">git clone https://github.com/GannonCombs/Gannon-mcp.git</span>
+<span class="prompt-symbol">$ </span><span class="cmd">cd Gannon-mcp && npm install && npm run build && npm link</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp init</span>
+<span class="output">  Wallet address: 0x...a4f2</span>
+<span class="success">  ✓ Ready</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span>
+<span class="success">  ✓ MCP server registered with Claude Code</span>
+<span class="prompt-symbol">$ </span><span class="cursor"></span></code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHAT AGENTS CAN PAY FOR -->
+<section id="capabilities">
+  <div class="container">
+    <div class="section-label">What agents unlock</div>
+    <h2>Pay for anything. Programmatically.</h2>
+
+    <div class="cap-grid">
+      <div class="cap-card">
+        <h3><span class="cap-icon">⬡</span> x402 Endpoints</h3>
+        <p>Auto-pay any HTTP endpoint that returns 402. USDC on Base, zero friction.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">◈</span> Image Generation</h3>
+        <p>Pay for image gen APIs on demand. Generate assets without pre-funded accounts.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">♫</span> Music Generation</h3>
+        <p>Access paid music gen endpoints. Create tracks and audio programmatically.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">▣</span> LLM Inference</h3>
+        <p>Pay-per-call inference APIs. No API keys, no subscriptions, just pay and call.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">◉</span> Hosting & Compute</h3>
+        <p>Provision servers, deploy containers, buy compute time with a single payment.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">◎</span> Domain Names</h3>
+        <p>Register and manage domains. Agent handles purchase, DNS, and renewal.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">◧</span> Proprietary Datasets</h3>
+        <p>Access paid data feeds. Market data, analytics, research, behind paywalls.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">▤</span> Any Visa Merchant</h3>
+        <p>If it accepts Visa online, your agent can pay for it. Cards work everywhere.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MCP TOOLS -->
+<section id="tools">
+  <div class="container">
+    <div class="section-label">MCP Tools</div>
+    <h2>10 tools. Full payment lifecycle.</h2>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_pay</div>
+      <div class="tool-params">amount, merchantName, description, preferredRail?, url?, method?, body?</div>
+      <div class="tool-desc">Execute a payment. Auto-selects the optimal rail: card, USDC on Base, or Tempo pathUSD. Pass a URL to auto-pay 402 challenges.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_get_status</div>
+      <div class="tool-params">no params</div>
+      <div class="tool-desc">Enrollment status, card count, Base USDC balance, Tempo pathUSD balance, spending controls, and daily spend tracking.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_get_cards</div>
+      <div class="tool-params">no params</div>
+      <div class="tool-desc">List all enrolled payment cards with token IDs, brand, last4, expiry, and default status.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_transaction_history</div>
+      <div class="tool-params">limit?</div>
+      <div class="tool-desc">Recent transactions with amounts, merchants, rails, timestamps. Includes aggregate stats: total transactions, total spent, last 30 days.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_update_spending_controls</div>
+      <div class="tool-params">maxTransactionAmount?, dailyLimit?, autoApproveUnder?</div>
+      <div class="tool-desc">Set per-transaction max, daily spending cap, and auto-approve threshold. Payments under the threshold skip approval prompts.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_add_card</div>
+      <div class="tool-params">no params</div>
+      <div class="tool-desc">Opens VGS Collect enrollment form in browser. Card is tokenized by VGS (PCI DSS L1). Only aliases stored locally.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_enroll_device</div>
+      <div class="tool-params">email?, phone?</div>
+      <div class="tool-desc">Start Click to Pay enrollment. Sends a one-time verification code to email or phone.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_verify_otp</div>
+      <div class="tool-params">otp, requestId</div>
+      <div class="tool-desc">Complete enrollment with the verification code received from checkout_enroll_device.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_login</div>
+      <div class="tool-params">no params</div>
+      <div class="tool-desc">GitHub OAuth login followed by secure card enrollment. Opens browser for the full auth flow.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_reset</div>
+      <div class="tool-params">confirm, retainCryptoKeys?</div>
+      <div class="tool-desc">Clear enrollment and credentials. retainCryptoKeys (default true) keeps wallet keys so funds are safe.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CLI REFERENCE -->
+<section id="cli">
+  <div class="container">
+    <div class="section-label">CLI</div>
+    <h2>Command line, the way it should be.</h2>
+
+    <div class="terminal" style="max-width: 700px;">
+      <div class="terminal-header" style="position: relative;">
+        <div class="terminal-dots">
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+        </div>
+        <span class="terminal-title">visa-mcp</span>
+        <button class="terminal-copy" onclick="copyCLI(this)">Copy</button>
+      </div>
+      <div class="terminal-body">
+        <code><span class="comment"># Setup</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp init</span>              <span class="comment"># Create wallet, initialize config</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span>    <span class="comment"># Add MCP server to Claude Code</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp status</span>            <span class="comment"># Show enrollment and balances</span>
+
+<span class="comment"># Payments</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp pay &lt;url&gt;</span>          <span class="comment"># Pay a merchant URL (auto-detect rail)</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp pay &lt;url&gt; --method POST --body '{"prompt":"hello"}'</span>
+
+<span class="comment"># Card enrollment</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp enroll-card</span>        <span class="comment"># Open VGS Collect form in browser</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp enroll-card --demo</span> <span class="comment"># Demo mode, no VGS creds needed</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp cards</span>              <span class="comment"># List enrolled cards</span></code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAYMENT RAILS -->
+<section id="rails">
+  <div class="container">
+    <div class="section-label">Payment Rails</div>
+    <h2>Four rails. Auto-selected.</h2>
+
+    <div class="rail-grid">
+      <div class="rail-card">
+        <h3>x402</h3>
+        <p>Pay x402 endpoints with USDC on Base. Supports GET and POST. The native payment protocol for AI agents.</p>
+      </div>
+      <div class="rail-card">
+        <h3>MPP / Tempo</h3>
+        <p>Pay via Tempo network using pathUSD stablecoins. Machine Payments Protocol for instant settlement.</p>
+      </div>
+      <div class="rail-card">
+        <h3>MPP / Card</h3>
+        <p>Pay MPP endpoints with a VGS-vaulted card. Tokenized, PCI compliant, no PAN exposure.</p>
+      </div>
+      <div class="rail-card">
+        <h3>Card (Direct)</h3>
+        <p>Traditional card payments via VGS network tokenization. Works anywhere Visa is accepted online.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="architecture">
+  <div class="container">
+    <div class="section-label">Architecture</div>
+    <h2>How it works.</h2>
+
+    <div class="arch-diagram">
+      <pre>
+  You ── Agent ── MCP Server ── Payment Rail ── Done
+                     │
+           ┌─────────┼──────────────────┐
+           │         │                  │
+      VGS Card    USDC Wallet     Tempo Wallet
+       Vault     (Base Network)  (Path Network)
+           │         │                  │
+           ▼         ▼                  ▼
+     ┌───────────────────────────────────────┐
+     │          Payment Router               │
+     │  Auto-selects optimal rail based on:  │
+     │  • Merchant requirements              │
+     │  • Available balance                  │
+     │  • Transaction size                   │
+     │  • User preference                    │
+     └───────────────────────────────────────┘
+           │
+           ▼
+     ┌───────────────────────────────────────┐
+     │          Security Layer               │
+     │  • OS Keychain storage                │
+     │  • Biometric approval                 │
+     │  • Spending limits                    │
+     │  • Transaction logging                │
+     └───────────────────────────────────────┘</pre>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section id="install">
+  <div class="container">
+    <div class="section-label">Install</div>
+    <h2>Two paths. Same result.</h2>
+
+    <div class="install-grid">
+      <div class="install-card">
+        <div class="install-card-header">
+          <h3>Claude Code</h3>
+        </div>
+        <div class="install-card-body">
+          <code><span class="prompt-symbol">$ </span><span class="cmd">git clone https://github.com/GannonCombs/Gannon-mcp.git</span>
+<span class="prompt-symbol">$ </span><span class="cmd">cd Gannon-mcp</span>
+<span class="prompt-symbol">$ </span><span class="cmd">npm install && npm run build && npm link</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp init</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span>
+<span class="success">  ✓ Done. Restart Claude Code.</span></code>
+        </div>
+      </div>
+      <div class="install-card">
+        <div class="install-card-header">
+          <h3>OpenClaw</h3>
+        </div>
+        <div class="install-card-body">
+          <code><span class="prompt-symbol">$ </span><span class="cmd">git clone https://github.com/GannonCombs/Gannon-mcp.git</span>
+<span class="prompt-symbol">$ </span><span class="cmd">cd Gannon-mcp</span>
+<span class="prompt-symbol">$ </span><span class="cmd">npm install && npm run build && npm link</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp init</span>
+<span class="prompt-symbol">$ </span><span class="cmd">openclaw mcp add visa-mcp</span>
+<span class="success">  ✓ Done. Agent has payment tools.</span></code>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section id="security">
+  <div class="container">
+    <div class="section-label">Security</div>
+    <h2>Your credentials. Your machine. Your rules.</h2>
+
+    <div class="sec-grid">
+      <div class="sec-item">
+        <div class="label">Card data</div>
+        <div class="value">AES-256-GCM</div>
+      </div>
+      <div class="sec-item">
+        <div class="label">Credentials</div>
+        <div class="value">OS Keychain</div>
+      </div>
+      <div class="sec-item">
+        <div class="label">Payments</div>
+        <div class="value">Biometric</div>
+      </div>
+      <div class="sec-item">
+        <div class="label">Cards</div>
+        <div class="value">VGS PCI L1</div>
+      </div>
+      <div class="sec-item">
+        <div class="label">Limits</div>
+        <div class="value">Per-txn + Daily</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="brand">
+      <svg viewBox="0 0 1000 324" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M413.63 2.36L311.68 321.48H252.09L150.15 2.36H215.89L282.88 237.7L351.11 2.36H413.63ZM444.47 321.48V2.36H500.88V321.48H444.47ZM684.05 68.87C671.48 55.06 649.56 42.49 623.96 42.49C591.88 42.49 573.63 59.49 573.63 79.23C573.63 102.16 599.22 112.23 629.07 123.31C672.49 139.3 722.84 157.55 722.84 214.97C722.84 277.05 672.73 326.16 600.96 326.16C554.49 326.16 511.07 308.41 480.22 275.33L519.46 234.84C534.44 251.34 561.29 271.58 601.96 271.58C634.04 271.58 658.39 254.08 658.39 229.49C658.39 204.39 630.04 192.82 598.22 181.24C555.99 165.26 508.83 146.26 508.83 91.85C508.83 35.69 553.49 -2.31 622.47 -2.31C664.89 -2.31 702.1 14.19 726.49 39.28L684.05 68.87ZM856.48 221.92H809.82L791.07 321.48H731.48L833.41 2.36H893.01L994.94 321.48H935.36L916.6 221.92H856.48ZM906.33 176.45L886.84 75.02L867.34 176.45H906.33Z"/>
+      </svg>
+    </div>
+    <p>Visa Crypto Labs · <a href="https://github.com/GannonCombs/Gannon-mcp">GitHub</a> · <a href="/agent.txt">agent.txt</a></p>
+  </div>
+</footer>
+
+<script>
+function copyInstall(btn) {
+  const text = `git clone https://github.com/GannonCombs/Gannon-mcp.git && cd Gannon-mcp && npm install && npm run build && npm link
+visa-mcp init && visa-mcp install claude`;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+function copyCLI(btn) {
+  const text = `# Setup
+visa-mcp init
+visa-mcp install claude
+visa-mcp status
+
+# Payments
+visa-mcp pay <url>
+
+# Card enrollment
+visa-mcp enroll-card
+visa-mcp cards`;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+</script>
+
+</body>
+</html>

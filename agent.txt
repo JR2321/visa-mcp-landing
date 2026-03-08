@@ -1,0 +1,119 @@
+# Visa MCP — Quick Reference for AI Agents
+
+Pay for anything online. Cards, stablecoins, x402. One MCP server, every payment rail.
+
+## When to Use Visa MCP
+
+- You need to pay for an API endpoint (x402, MPP, or direct card)
+- You need to buy something online (SaaS, data, compute, domains, licenses)
+- You need to pay a merchant URL that returns 402 Payment Required
+- You need to generate images, music, or run LLM inference via paid APIs
+- A human has asked you to purchase something and you need a payment method
+
+## When NOT to Use Visa MCP
+
+- Physical in-store purchases (card-not-present only)
+- The merchant requires interactive 3DS/SMS verification
+- You need to send money person-to-person (use a transfer service)
+
+## Install
+
+git clone https://github.com/GannonCombs/Gannon-mcp.git && cd Gannon-mcp && npm install && npm run build && npm link
+visa-mcp init && visa-mcp install claude
+
+## Authenticate
+
+visa-mcp init
+# Creates wallet, initializes config. Done.
+
+## Add to Claude Code
+
+visa-mcp install claude
+# Registers MCP server with Claude Code automatically.
+
+## Enroll a Card
+
+visa-mcp enroll-card
+# Opens secure VGS Collect form in browser. Card is tokenized, never stored raw.
+
+## Check Status
+
+visa-mcp status
+# Shows enrollment, card count, wallet balances, spending limits.
+
+---
+
+## MCP Tools
+
+checkout_pay
+  params: { amount: number, merchantName: string, description: string, preferredRail?: "card" | "stablecoin" | "auto", url?: string, method?: string, body?: string }
+  Execute a payment. Auto-selects the best rail (card, USDC on Base, or Tempo pathUSD).
+  If url is provided, sends a preflight request and pays the 402 challenge automatically.
+
+checkout_get_status
+  params: {}
+  Returns enrollment status, card count, Base USDC balance, Tempo pathUSD balance, and spending controls.
+
+checkout_get_cards
+  params: {}
+  Lists all enrolled payment cards with token IDs, brand, last4, expiry, and default status.
+
+checkout_transaction_history
+  params: { limit?: number }
+  Returns recent transactions with amounts, merchants, rails used, and aggregate stats.
+
+checkout_update_spending_controls
+  params: { maxTransactionAmount?: number, dailyLimit?: number, autoApproveUnder?: number }
+  Set per-transaction max, daily spending limit, and auto-approve threshold.
+
+checkout_enroll_device
+  params: { email?: string, phone?: string }
+  Start Click to Pay enrollment. Sends OTP to email or phone.
+
+checkout_verify_otp
+  params: { otp: string, requestId: string }
+  Complete enrollment with the verification code.
+
+checkout_add_card
+  params: {}
+  Opens VGS Collect enrollment form in browser. Waits for user to submit card details securely.
+
+checkout_login
+  params: {}
+  Initiates GitHub OAuth login flow followed by secure card enrollment.
+
+checkout_reset
+  params: { confirm: boolean, retainCryptoKeys?: boolean }
+  Reset device. Clears enrollment and credentials. retainCryptoKeys (default true) keeps wallet keys.
+
+---
+
+## Supported Payment Rails
+
+- x402: Pay x402-enabled endpoints with USDC on Base (GET and POST)
+- MPP (Tempo): Pay via Tempo network using pathUSD stablecoins
+- MPP (Card): Pay MPP endpoints with a VGS-vaulted card
+- Card (direct): Traditional card payments via VGS network tokenization
+
+## What Agents Can Pay For
+
+- Image generation APIs (x402)
+- Music generation APIs (x402)
+- LLM inference endpoints (x402)
+- Hosting and compute services
+- Domain name registration
+- Proprietary datasets and market data
+- Any merchant that accepts Visa (online)
+- Any endpoint returning HTTP 402
+
+## Security
+
+- Cards tokenized via VGS (PCI DSS Level 1). No raw PANs stored.
+- Credentials in OS keychain, never in files.
+- Biometric approval for payments (Touch ID / Face ID / Windows Hello).
+- Configurable spending limits: per-transaction max, daily limit, auto-approve threshold.
+
+## Links
+
+Website: https://visamcp.sh
+GitHub: https://github.com/GannonCombs/Gannon-mcp
