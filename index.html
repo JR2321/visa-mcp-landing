@@ -38,6 +38,46 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* ---- SCROLLING WORDS BACKGROUND ---- */
+  .words-bg {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0.06;
+    z-index: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    height: 100%;
+  }
+
+  .words-bg .column {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-bright);
+    letter-spacing: 0.05em;
+    text-transform: lowercase;
+    white-space: nowrap;
+    line-height: 2.6;
+  }
+
+  .words-bg .column .scroll-inner {
+    display: flex;
+    flex-direction: column;
+    animation: scrollUp var(--duration) linear infinite;
+  }
+
+  @keyframes scrollUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+
   a {
     color: var(--text-bright);
     text-decoration: none;
@@ -46,6 +86,12 @@
   }
   a:hover {
     border-color: var(--text-bright);
+  }
+
+  /* All real content sits above the words background */
+  nav, .hero, section, footer {
+    position: relative;
+    z-index: 10;
   }
 
   /* ---- NAV ---- */
@@ -853,6 +899,74 @@
     <p>Visa Crypto Labs · <a href="https://github.com/GannonCombs/Gannon-mcp">GitHub</a> · <a href="/agent.txt">agent.txt</a></p>
   </div>
 </footer>
+
+<!-- SCROLLING WORDS BACKGROUND -->
+<div class="words-bg" id="wordsBg"></div>
+
+<script>
+// ---- Scrolling words background ----
+const verbs = [
+  'working', 'crunching', 'cooking', 'churning', 'cogitating', 'brewing',
+  'baking', 'building', 'compiling', 'thinking', 'pondering', 'crafting',
+  'conjuring', 'assembling', 'scheming', 'tinkering', 'iterating',
+  'refactoring', 'optimizing', 'debugging', 'shipping', 'deploying',
+  'architecting', 'prototyping', 'scaffolding', 'bootstrapping',
+  'instantiating', 'initializing', 'configuring', 'provisioning',
+  'forging', 'welding', 'grinding', 'milling', 'smelting', 'hammering',
+  'machining', 'tempering', 'molding', 'casting',
+  'reasoning', 'analyzing', 'synthesizing', 'evaluating', 'deducing',
+  'inferring', 'computing', 'calculating', 'estimating', 'modeling',
+  'simulating', 'forecasting', 'projecting', 'extrapolating',
+  'settling', 'clearing', 'routing', 'signing', 'authorizing',
+  'validating', 'verifying', 'reconciling', 'ledgering', 'netting',
+  'batching', 'posting', 'crediting', 'debiting', 'transferring',
+  'hashing', 'minting', 'bridging', 'syncing', 'indexing', 'staking',
+  'attesting', 'propagating', 'finalizing', 'confirming',
+  'simmering', 'fermenting', 'distilling', 'reducing', 'marinating',
+  'seasoning', 'blending', 'whisking', 'kneading', 'proofing',
+  'humming', 'buzzing', 'whirring', 'pulsing', 'sparking', 'charging',
+  'fueling', 'loading', 'buffering', 'streaming', 'weaving', 'threading',
+  'stitching', 'wiring', 'piping', 'parsing', 'encoding', 'decoding',
+  'resolving', 'executing', 'orchestrating', 'dispatching', 'scheduling',
+  'queueing', 'polling', 'rendering', 'composing', 'generating',
+  'transforming', 'materializing'
+];
+
+function buildWordColumns() {
+  const container = document.getElementById('wordsBg');
+  container.innerHTML = '';
+  const colWidth = 130;
+  const numCols = Math.ceil(window.innerWidth / colWidth) + 2;
+  const wordsPerCol = 50;
+
+  for (let c = 0; c < numCols; c++) {
+    const col = document.createElement('div');
+    col.className = 'column';
+    const duration = 25 + Math.random() * 20;
+    col.style.setProperty('--duration', duration + 's');
+
+    const inner = document.createElement('div');
+    inner.className = 'scroll-inner';
+    inner.style.animationDelay = (-Math.random() * 50) + 's';
+
+    const words = [];
+    for (let i = 0; i < wordsPerCol; i++) {
+      words.push(verbs[Math.floor(Math.random() * verbs.length)]);
+    }
+    [...words, ...words].forEach(w => {
+      const span = document.createElement('span');
+      span.textContent = w;
+      inner.appendChild(span);
+    });
+
+    col.appendChild(inner);
+    container.appendChild(col);
+  }
+}
+
+buildWordColumns();
+window.addEventListener('resize', buildWordColumns);
+</script>
 
 <script>
 function copyInstall(btn) {
