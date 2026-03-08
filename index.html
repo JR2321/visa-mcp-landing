@@ -483,7 +483,7 @@
   /* ---- SECURITY ---- */
   .sec-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
@@ -491,9 +491,15 @@
     overflow: hidden;
   }
 
+  @media (max-width: 640px) {
+    .sec-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
   .sec-item {
     background: var(--bg);
-    padding: 20px;
+    padding: 24px;
   }
 
   .sec-item .label {
@@ -505,9 +511,16 @@
   }
 
   .sec-item .value {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-bright);
-    font-weight: 500;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .sec-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.5;
   }
 
   /* ---- FOOTER ---- */
@@ -889,22 +902,22 @@
       <div class="sec-item">
         <div class="label">Card data</div>
         <div class="value">AES-256-GCM</div>
+        <div class="sec-desc">Encrypted per-field with random IV. Decrypted only on explicit request.</div>
       </div>
       <div class="sec-item">
         <div class="label">Credentials</div>
         <div class="value">OS Keychain</div>
+        <div class="sec-desc">macOS Keychain, Windows Credential Manager. Never stored in files.</div>
       </div>
       <div class="sec-item">
-        <div class="label">Payments</div>
+        <div class="label">Approval</div>
         <div class="value">Biometric</div>
+        <div class="sec-desc">Touch ID, Face ID, or Windows Hello required for every payment.</div>
       </div>
       <div class="sec-item">
-        <div class="label">Cards</div>
+        <div class="label">Card vault</div>
         <div class="value">VGS PCI L1</div>
-      </div>
-      <div class="sec-item">
-        <div class="label">Limits</div>
-        <div class="value">Per-txn + Daily</div>
+        <div class="sec-desc">Cards tokenized by Very Good Security. No raw PANs stored anywhere.</div>
       </div>
     </div>
   </div>
