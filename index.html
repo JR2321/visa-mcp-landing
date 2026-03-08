@@ -7,7 +7,7 @@
 <meta name="description" content="Visa is here to power the future of command line commerce. Cards, stablecoins, x402. One MCP server, every payment rail.">
 <link rel="agent" href="/agent.txt">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+  /* Menlo = Mac Terminal default. SF Mono = newer macOS. Fallbacks for Windows/Linux. */
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -32,7 +32,7 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-family: Menlo, 'SF Mono', Monaco, 'Courier New', monospace;
     font-size: 14px;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
@@ -57,7 +57,7 @@
     flex-direction: column;
     align-items: center;
     padding: 0 10px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: Menlo, 'SF Mono', Monaco, 'Courier New', monospace;
     font-size: 13px;
     font-weight: 400;
     color: var(--text-bright);
