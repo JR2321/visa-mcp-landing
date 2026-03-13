@@ -1,6 +1,6 @@
-# Visa MCP — Install Skill
+# Visa CLI — Install Skill
 
-You are installing Visa MCP, a payment infrastructure MCP server that gives AI agents the ability to pay for anything online. Cards, USDC stablecoins, x402 protocol, and Tempo pathUSD.
+You are installing Visa CLI, a payment infrastructure MCP server that gives AI agents the ability to pay for anything online. Cards, USDC stablecoins, x402 protocol, and Tempo pathUSD.
 
 ## What You Get
 

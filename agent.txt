@@ -1,8 +1,8 @@
-# Visa MCP — Quick Reference for AI Agents
+# Visa CLI — Quick Reference for AI Agents
 
 Pay for anything online. Cards, stablecoins, x402. One MCP server, every payment rail.
 
-## When to Use Visa MCP
+## When to Use Visa CLI
 
 - You need to pay for an API endpoint (x402, MPP, or direct card)
 - You need to buy something online (SaaS, data, compute, domains, licenses)
@@ -10,7 +10,7 @@ Pay for anything online. Cards, stablecoins, x402. One MCP server, every payment
 - You need to generate images, music, or run LLM inference via paid APIs
 - A human has asked you to purchase something and you need a payment method
 
-## When NOT to Use Visa MCP
+## When NOT to Use Visa CLI
 
 - Physical in-store purchases (card-not-present only)
 - The merchant requires interactive 3DS/SMS verification
