@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visa MCP — Command Line Commerce</title>
+<meta name="description" content="Visa is here to power the future of command line commerce. Cards, stablecoins, x402. One MCP server, every payment rail.">
+<link rel="agent" href="/agent.txt">
+<style>
+  /* Menlo = Mac Terminal default. SF Mono = newer macOS. Fallbacks for Windows/Linux. */
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #000000;
+    --bg-elevated: #0a0a0a;
+    --bg-terminal: #111111;
+    --border: #222222;
+    --border-light: #333333;
+    --text: #e0e0e0;
+    --text-dim: #888888;
+    --text-bright: #ffffff;
+    --accent: #ffffff;
+    --green: #4afa82;
+    --cursor: #e0e0e0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Menlo, 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- SCROLLING WORDS BACKGROUND ---- */
+  .words-bg {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0.15;
+    z-index: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    height: 100%;
+  }
+
+  .words-bg .column {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10px;
+    font-family: Menlo, 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 400;
+    color: #999999;
+    letter-spacing: 0.05em;
+    text-transform: lowercase;
+    white-space: nowrap;
+    line-height: 2.6;
+  }
+
+  .words-bg .column .scroll-inner {
+    display: flex;
+    flex-direction: column;
+    animation: scrollUp var(--duration) linear infinite;
+  }
+
+  @keyframes scrollUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+
+  a {
+    color: var(--text-bright);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-light);
+    transition: border-color 0.2s;
+  }
+  a:hover {
+    border-color: var(--text-bright);
+  }
+
+  /* All real content sits above the words background */
+  nav, .hero, section, footer {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+  }
+
+  .nav-brand svg {
+    height: 22px;
+    width: auto;
+  }
+
+  .nav-brand-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: inherit;
+    line-height: 1;
+    word-spacing: 0;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .nav-link {
+    font-size: 13px;
+    color: var(--text-dim);
+    border: none;
+    transition: color 0.2s;
+  }
+  .nav-link:hover {
+    color: var(--text-bright);
+    border: none;
+  }
+
+  .agent-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--bg-terminal);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .agent-btn:hover {
+    background: var(--border);
+    border-color: var(--text-dim);
+    color: var(--text-bright);
+  }
+
+  .agent-btn .prompt {
+    color: var(--text-dim);
+  }
+
+  /* ---- LAYOUT ---- */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section {
+    padding: 80px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  section:last-of-type {
+    border-bottom: none;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--text-bright);
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text-bright);
+    margin-bottom: 32px;
+  }
+
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--text-dim);
+    max-width: 600px;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    padding-top: 140px;
+    padding-bottom: 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero h1 {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  .hero p {
+    font-size: 15px;
+    margin-bottom: 40px;
+  }
+
+  /* ---- TERMINAL ---- */
+  .terminal {
+    background: var(--bg-terminal);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .terminal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-light);
+  }
+
+  .terminal-title {
+    font-size: 11px;
+    color: var(--text-dim);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .terminal-copy {
+    font-size: 11px;
+    color: var(--text-dim);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .terminal-copy:hover {
+    color: var(--text);
+    border-color: var(--border-light);
+  }
+
+  .terminal-body {
+    padding: 20px;
+    overflow-x: auto;
+  }
+
+  .terminal-body code {
+    display: block;
+    white-space: pre;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .prompt-symbol {
+    color: var(--text-dim);
+    user-select: none;
+  }
+
+  .cmd {
+    color: var(--text-bright);
+  }
+
+  .comment {
+    color: #555;
+  }
+
+  .output {
+    color: var(--text-dim);
+  }
+
+  .success {
+    color: var(--green);
+  }
+
+  /* ---- CAPABILITIES GRID ---- */
+  .cap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .cap-card {
+    background: var(--bg);
+    padding: 24px;
+  }
+
+  .cap-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .cap-icon {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    color: var(--text-dim);
+  }
+
+  .cap-card p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+
+  /* ---- TOOLS LIST ---- */
+  .tool-item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tool-item:last-child {
+    border-bottom: none;
+  }
+
+  .tool-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-bright);
+    font-family: inherit;
+  }
+
+  .tool-params {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .tool-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 8px;
+    max-width: 100%;
+  }
+
+  /* ---- RAILS ---- */
+  .rail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .rail-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .rail-card h3 {
+    margin-bottom: 6px;
+  }
+
+  .rail-card p {
+    font-size: 12px;
+  }
+
+  /* ---- INSTALL SECTION ---- */
+  .install-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 640px) {
+    .install-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .install-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .install-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .install-card-header h3 {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .install-card-body {
+    padding: 20px;
+  }
+
+  .install-card-body code {
+    display: block;
+    font-size: 12px;
+    line-height: 1.8;
+    white-space: pre;
+    color: var(--text);
+  }
+
+  /* ---- ARCHITECTURE ---- */
+  .arch-diagram {
+    background: var(--bg-terminal);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-dim);
+  }
+
+  .arch-diagram pre {
+    white-space: pre;
+    font-family: inherit;
+  }
+
+  /* ---- SECURITY ---- */
+  .sec-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .sec-grid, .sec-grid[style*="repeat(3"] {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .sec-grid, .sec-grid[style*="repeat(3"] {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  .sec-item {
+    background: var(--bg);
+    padding: 24px;
+  }
+
+  .sec-item .label {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .sec-item .value {
+    font-size: 14px;
+    color: var(--text-bright);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .sec-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* ---- FOOTER ---- */
+  footer {
+    padding: 40px 0;
+    text-align: center;
+  }
+
+  footer p {
+    font-size: 12px;
+    color: var(--text-dim);
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  footer a {
+    color: var(--text-dim);
+    border-bottom-color: var(--border);
+  }
+
+  footer .brand {
+    margin-bottom: 12px;
+  }
+
+  footer .brand svg {
+    height: 14px;
+    opacity: 0.4;
+  }
+
+  footer .brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  footer .brand-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    opacity: 0.4;
+  }
+
+  /* ---- CURSOR BLINK ---- */
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: var(--cursor);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 24px; }
+    .terminal-body { padding: 16px; }
+    .terminal-body code { font-size: 11px; }
+    nav { padding: 0 16px; }
+    .container { padding: 0 16px; }
+    section { padding: 60px 0; }
+    .cap-grid { grid-template-columns: 1fr; }
+    .nav-link.desktop-only { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-brand">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 324.68"><path fill="#ffffff" d="m651.19.5c-70.93,0-134.32,36.77-134.32,104.69,0,77.9,112.42,83.28,112.42,122.42,0,16.48-18.88,31.23-51.14,31.23-45.77,0-79.98-20.61-79.98-20.61l-14.64,68.55s39.41,17.41,91.73,17.41c77.55,0,138.58-38.57,138.58-107.66,0-82.32-112.89-87.54-112.89-123.86,0-12.91,15.5-27.05,47.66-27.05,36.29,0,65.89,14.99,65.89,14.99l14.33-66.2S696.61.5,651.18.5h0ZM2.22,5.5L.5,15.49s29.84,5.46,56.72,16.36c34.61,12.49,37.07,19.77,42.9,42.35l63.51,244.83h85.14L379.93,5.5h-84.94l-84.28,213.17-34.39-180.7c-3.15-20.68-19.13-32.48-38.68-32.48,0,0-135.41,0-135.41,0Zm411.87,0l-66.63,313.53h81L494.85,5.5h-80.76Zm451.76,0c-19.53,0-29.88,10.46-37.47,28.73l-118.67,284.8h84.94l16.43-47.47h103.48l9.99,47.47h74.95L934.12,5.5h-68.27Zm11.05,84.71l25.18,117.65h-67.45l42.28-117.65h0Z"/></svg>
+    <span class="nav-brand-text"><span>CRYPTO</span><span style="margin-left:5px">LABS</span></span>
+  </a>
+  <div class="nav-right">
+    <a href="#tools" class="nav-link desktop-only">Tools</a>
+    <a href="#install" class="nav-link desktop-only">Install</a>
+    <a href="https://github.com/GannonCombs/Gannon-mcp" class="nav-link desktop-only">GitHub</a>
+    <a href="/agent.txt" class="agent-btn"><span class="prompt">$</span> cat agent.txt</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <h1>Visa is here to power the future of command line commerce.</h1>
+    <p>One MCP server. Cards and stablecoins. Give your agent the ability to pay for anything you need as you code.</p>
+
+    <p style="margin-top: 40px; margin-bottom: 12px; font-size: 12px; color: var(--text-dim); letter-spacing: 0.5px;">Copy the prompt below and paste into your agent.</p>
+
+    <div class="prompt-box" style="max-width: 700px;">
+      <div class="terminal">
+        <div class="terminal-header" style="position: relative;">
+          <div class="terminal-dots">
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+          </div>
+          <span class="terminal-title">install</span>
+          <button class="terminal-copy" onclick="copyPrompt(this)">Copy</button>
+        </div>
+        <div class="terminal-body" style="padding: 24px;">
+          <code style="font-size: 15px; line-height: 1.6;"><span class="cmd">Read https://visamcp.sh/skills/skill.md and install it.</span></code>
+        </div>
+      </div>
+    </div>
+
+    <div class="install-steps" style="margin-top: 32px; max-width: 700px;">
+      <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 180px;">
+          <div style="font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 8px;">1</div>
+          <h3 style="font-size: 13px; margin-bottom: 4px;">Paste the prompt</h3>
+          <p style="font-size: 12px;">Into Claude Code, OpenClaw, or any MCP-compatible agent.</p>
+        </div>
+        <div style="flex: 1; min-width: 180px;">
+          <div style="font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 8px;">2</div>
+          <h3 style="font-size: 13px; margin-bottom: 4px;">Agent installs itself</h3>
+          <p style="font-size: 12px;">Reads the skill, clones the repo, builds, initializes wallet, registers MCP.</p>
+        </div>
+        <div style="flex: 1; min-width: 180px;">
+          <div style="font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 8px;">3</div>
+          <h3 style="font-size: 13px; margin-bottom: 4px;">Pay for anything</h3>
+          <p style="font-size: 12px;">10 payment tools. Cards, USDC, x402, Tempo. Every rail, one server.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHAT AGENTS CAN PAY FOR -->
+<section id="capabilities">
+  <div class="container">
+    <div class="section-label">What agents unlock</div>
+    <h2>Pay for anything. Programmatically.</h2>
+
+    <div class="cap-grid">
+      <div class="cap-card">
+        <h3><span class="cap-icon">◈</span> Image Generation</h3>
+        <p>Pay for image gen APIs on demand. Generate assets without pre-funded accounts.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">♫</span> Music Generation</h3>
+        <p>Access paid music gen endpoints. Create tracks and audio programmatically.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">▣</span> LLM Inference</h3>
+        <p>Pay-per-call inference APIs. No API keys, no subscriptions, just pay and call.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">◎</span> Domain Names</h3>
+        <p>Register and manage domains. Agent handles purchase, DNS, and renewal.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">◉</span> Hosting & Compute</h3>
+        <p>Provision servers, deploy containers, buy compute time with a single payment.</p>
+      </div>
+      <div class="cap-card">
+        <h3><span class="cap-icon">◧</span> Proprietary Datasets</h3>
+        <p>Access paid data feeds. Market data, analytics, research, behind paywalls.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MCP TOOLS -->
+<section id="tools">
+  <div class="container">
+    <div class="section-label">MCP Tools</div>
+    <h2>10 tools. Full payment lifecycle.</h2>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_pay</div>
+      <div class="tool-params">amount, merchantName, description, preferredRail?, url?, method?, body?</div>
+      <div class="tool-desc">Execute a payment. Auto-selects the optimal rail: card, USDC on Base, or Tempo pathUSD. Pass a URL to auto-pay 402 challenges.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_get_status</div>
+      <div class="tool-params">no params</div>
+      <div class="tool-desc">Enrollment status, card count, Base USDC balance, Tempo pathUSD balance, spending controls, and daily spend tracking.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_get_cards</div>
+      <div class="tool-params">no params</div>
+      <div class="tool-desc">List all enrolled payment cards with token IDs, brand, last4, expiry, and default status.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_transaction_history</div>
+      <div class="tool-params">limit?</div>
+      <div class="tool-desc">Recent transactions with amounts, merchants, rails, timestamps. Includes aggregate stats: total transactions, total spent, last 30 days.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_update_spending_controls</div>
+      <div class="tool-params">maxTransactionAmount?, dailyLimit?, autoApproveUnder?</div>
+      <div class="tool-desc">Set per-transaction max, daily spending cap, and auto-approve threshold. Payments under the threshold skip approval prompts.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_add_card</div>
+      <div class="tool-params">no params</div>
+      <div class="tool-desc">Opens VGS Collect enrollment form in browser. Card is tokenized by VGS (PCI DSS L1). Only aliases stored locally.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_enroll_device</div>
+      <div class="tool-params">email?, phone?</div>
+      <div class="tool-desc">Start Click to Pay enrollment. Sends a one-time verification code to email or phone.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_verify_otp</div>
+      <div class="tool-params">otp, requestId</div>
+      <div class="tool-desc">Complete enrollment with the verification code received from checkout_enroll_device.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_login</div>
+      <div class="tool-params">no params</div>
+      <div class="tool-desc">GitHub OAuth login followed by secure card enrollment. Opens browser for the full auth flow.</div>
+    </div>
+
+    <div class="tool-item">
+      <div class="tool-name">checkout_reset</div>
+      <div class="tool-params">confirm, retainCryptoKeys?</div>
+      <div class="tool-desc">Clear enrollment and credentials. retainCryptoKeys (default true) keeps wallet keys so funds are safe.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CLI REFERENCE -->
+<section id="cli">
+  <div class="container">
+    <div class="section-label">CLI</div>
+    <h2>Command line, the way it should be.</h2>
+
+    <div class="terminal" style="max-width: 700px;">
+      <div class="terminal-header" style="position: relative;">
+        <div class="terminal-dots">
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+        </div>
+        <span class="terminal-title">visa-mcp</span>
+        <button class="terminal-copy" onclick="copyCLI(this)">Copy</button>
+      </div>
+      <div class="terminal-body">
+        <code><span class="comment"># Setup</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp init</span>              <span class="comment"># Create wallet, initialize config</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span>    <span class="comment"># Add MCP server to Claude Code</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp status</span>            <span class="comment"># Show enrollment and balances</span>
+
+<span class="comment"># Payments</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp pay &lt;url&gt;</span>          <span class="comment"># Pay a merchant URL (auto-detect rail)</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp pay &lt;url&gt; --method POST --body '{"prompt":"hello"}'</span>
+
+<span class="comment"># Card enrollment</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp enroll-card</span>        <span class="comment"># Open VGS Collect form in browser</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp enroll-card --demo</span> <span class="comment"># Demo mode, no VGS creds needed</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp cards</span>              <span class="comment"># List enrolled cards</span></code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAYMENT RAILS -->
+<section id="rails">
+  <div class="container">
+    <div class="section-label">Payment Rails</div>
+    <h2>Four rails. Auto-selected.</h2>
+
+    <div class="rail-grid">
+      <div class="rail-card">
+        <h3>x402</h3>
+        <p>Pay x402 endpoints with USDC on Base. Supports GET and POST. The native payment protocol for AI agents.</p>
+      </div>
+      <div class="rail-card">
+        <h3>MPP / Tempo</h3>
+        <p>Pay via Tempo network using pathUSD stablecoins. Machine Payments Protocol for instant settlement.</p>
+      </div>
+      <div class="rail-card">
+        <h3>MPP / Card</h3>
+        <p>Pay MPP endpoints with a VGS-vaulted card. Tokenized, PCI compliant, no PAN exposure.</p>
+      </div>
+      <div class="rail-card">
+        <h3>Card (Direct)</h3>
+        <p>Traditional card payments via VGS network tokenization. Works anywhere Visa is accepted online.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="architecture">
+  <div class="container">
+    <div class="section-label">Architecture</div>
+    <h2>How it works.</h2>
+
+    <div class="arch-diagram">
+      <pre>
+  You ── Agent ── MCP Server ── Payment Rail ── Done
+                     │
+           ┌─────────┼──────────────────┐
+           │         │                  │
+      VGS Card    USDC Wallet     Tempo Wallet
+       Vault     (Base Network)  (Path Network)
+           │         │                  │
+           ▼         ▼                  ▼
+     ┌───────────────────────────────────────┐
+     │          Payment Router               │
+     │  Auto-selects optimal rail based on:  │
+     │  • Merchant requirements              │
+     │  • Available balance                  │
+     │  • Transaction size                   │
+     │  • User preference                    │
+     └───────────────────────────────────────┘
+           │
+           ▼
+     ┌───────────────────────────────────────┐
+     │          Security Layer               │
+     │  • OS Keychain storage                │
+     │  • Biometric approval                 │
+     │  • Spending limits                    │
+     │  • Transaction logging                │
+     └───────────────────────────────────────┘</pre>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS WITH -->
+<section id="install">
+  <div class="container">
+    <div class="section-label">Works with</div>
+    <h2>Any MCP-compatible agent.</h2>
+
+    <div class="install-grid">
+      <div class="install-card">
+        <div class="install-card-header">
+          <h3>Claude Code</h3>
+        </div>
+        <div class="install-card-body">
+          <code><span class="cmd">Read https://visamcp.sh/skills/skill.md and install it.</span>
+
+<span class="comment"># or manually:</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span></code>
+        </div>
+      </div>
+      <div class="install-card">
+        <div class="install-card-header">
+          <h3>OpenClaw</h3>
+        </div>
+        <div class="install-card-body">
+          <code><span class="cmd">Read https://visamcp.sh/skills/skill.md and install it.</span>
+
+<span class="comment"># or manually:</span>
+<span class="prompt-symbol">$ </span><span class="cmd">openclaw mcp add visa-mcp</span></code>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section id="security">
+  <div class="container">
+    <div class="section-label">Security</div>
+    <h2>Your agent pays. Your credentials never leave your machine.</h2>
+    <p style="margin-bottom: 32px;">Visa MCP is designed so your agent can make payments without ever seeing your card number, private key, or password. Every transaction requires your approval. Every credential stays on your device.</p>
+
+    <div class="sec-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="sec-item">
+        <div class="label">Card vault</div>
+        <div class="value">VGS PCI L1</div>
+        <div class="sec-desc">Cards tokenized by Very Good Security before they reach your machine. The agent only sees token aliases, never real card numbers.</div>
+      </div>
+      <div class="sec-item">
+        <div class="label">Encryption</div>
+        <div class="value">AES-256-GCM</div>
+        <div class="sec-desc">Card data encrypted per-field with random IV. Decrypted only when you approve via biometric. The agent triggers the payment; you authorize it.</div>
+      </div>
+      <div class="sec-item">
+        <div class="label">Credentials</div>
+        <div class="value">OS Keychain</div>
+        <div class="sec-desc">Stored in macOS Keychain, Windows Credential Manager, or Linux secret service. Never written to config files, env vars, or disk.</div>
+      </div>
+      <div class="sec-item">
+        <div class="label">Approval</div>
+        <div class="value">Biometric</div>
+        <div class="sec-desc">Touch ID, Face ID, or Windows Hello required for every payment above your auto-approve threshold. No silent charges.</div>
+      </div>
+      <div class="sec-item">
+        <div class="label">Spending controls</div>
+        <div class="value">Policy Engine</div>
+        <div class="sec-desc">Per-transaction caps, daily spending limits, and auto-approve thresholds. Your agent operates within boundaries you define.</div>
+      </div>
+      <div class="sec-item">
+        <div class="label">Audit trail</div>
+        <div class="value">Full History</div>
+        <div class="sec-desc">Every transaction logged with amount, merchant, rail, and timestamp. Query your history anytime via CLI or MCP tool.</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 32px; padding: 20px; border: 1px solid var(--border); border-radius: 8px;">
+      <div style="font-size: 12px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px;">What the agent cannot do</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: var(--text-dim);">
+        <div>✕ See your card number</div>
+        <div>✕ Export or transfer your private keys</div>
+        <div>✕ Modify its own spending limits</div>
+        <div>✕ Make payments without biometric approval</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 324.68"><path fill="#ffffff" d="m651.19.5c-70.93,0-134.32,36.77-134.32,104.69,0,77.9,112.42,83.28,112.42,122.42,0,16.48-18.88,31.23-51.14,31.23-45.77,0-79.98-20.61-79.98-20.61l-14.64,68.55s39.41,17.41,91.73,17.41c77.55,0,138.58-38.57,138.58-107.66,0-82.32-112.89-87.54-112.89-123.86,0-12.91,15.5-27.05,47.66-27.05,36.29,0,65.89,14.99,65.89,14.99l14.33-66.2S696.61.5,651.18.5h0ZM2.22,5.5L.5,15.49s29.84,5.46,56.72,16.36c34.61,12.49,37.07,19.77,42.9,42.35l63.51,244.83h85.14L379.93,5.5h-84.94l-84.28,213.17-34.39-180.7c-3.15-20.68-19.13-32.48-38.68-32.48,0,0-135.41,0-135.41,0Zm411.87,0l-66.63,313.53h81L494.85,5.5h-80.76Zm451.76,0c-19.53,0-29.88,10.46-37.47,28.73l-118.67,284.8h84.94l16.43-47.47h103.48l9.99,47.47h74.95L934.12,5.5h-68.27Zm11.05,84.71l25.18,117.65h-67.45l42.28-117.65h0Z"/></svg>
+      <span class="brand-text">Crypto Labs</span>
+    </div>
+    <p>Visa Crypto Labs · <a href="https://github.com/GannonCombs/Gannon-mcp">GitHub</a> · <a href="/agent.txt">agent.txt</a></p>
+  </div>
+</footer>
+
+<!-- PASSWORD GATE -->
+<div id="authGate" style="position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:Menlo,'SF Mono',Monaco,'Courier New',monospace;">
+  <div style="text-align:center;">
+    <div style="font-size:12px;color:#666;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;">Visa Crypto Labs</div>
+    <div style="font-size:14px;color:#888;margin-bottom:16px;">This site is password protected.</div>
+    <form onsubmit="return checkPw()" style="display:flex;gap:8px;">
+      <input id="pwInput" type="password" placeholder="Enter password" autofocus
+        style="background:#111;border:1px solid #333;border-radius:4px;padding:10px 16px;color:#fff;font-family:inherit;font-size:14px;outline:none;width:240px;">
+      <button type="submit"
+        style="background:#222;border:1px solid #333;border-radius:4px;padding:10px 20px;color:#fff;font-family:inherit;font-size:13px;cursor:pointer;">Enter</button>
+    </form>
+    <div id="pwError" style="font-size:12px;color:#ff4444;margin-top:12px;display:none;">Incorrect password</div>
+  </div>
+</div>
+
+<script>
+function checkPw() {
+  if (document.getElementById('pwInput').value === 'JRheatcheck') {
+    document.getElementById('authGate').style.display = 'none';
+    sessionStorage.setItem('visa_auth', '1');
+  } else {
+    document.getElementById('pwError').style.display = 'block';
+  }
+  return false;
+}
+if (sessionStorage.getItem('visa_auth') === '1') {
+  document.getElementById('authGate').style.display = 'none';
+}
+</script>
+
+<!-- SCROLLING WORDS BACKGROUND -->
+<div class="words-bg" id="wordsBg"></div>
+
+<script>
+// ---- Scrolling words background ----
+const verbs = [
+  'working', 'crunching', 'cooking', 'churning', 'cogitating', 'brewing',
+  'baking', 'building', 'compiling', 'thinking', 'pondering', 'crafting',
+  'conjuring', 'assembling', 'scheming', 'tinkering', 'iterating',
+  'refactoring', 'optimizing', 'debugging', 'shipping', 'deploying',
+  'architecting', 'prototyping', 'scaffolding', 'bootstrapping',
+  'instantiating', 'initializing', 'configuring', 'provisioning',
+  'forging', 'welding', 'grinding', 'milling', 'smelting', 'hammering',
+  'machining', 'tempering', 'molding', 'casting',
+  'reasoning', 'analyzing', 'synthesizing', 'evaluating', 'deducing',
+  'inferring', 'computing', 'calculating', 'estimating', 'modeling',
+  'simulating', 'forecasting', 'projecting', 'extrapolating',
+  'settling', 'clearing', 'routing', 'signing', 'authorizing',
+  'validating', 'verifying', 'reconciling', 'ledgering', 'netting',
+  'batching', 'posting', 'crediting', 'debiting', 'transferring',
+  'hashing', 'minting', 'bridging', 'syncing', 'indexing', 'staking',
+  'attesting', 'propagating', 'finalizing', 'confirming',
+  'simmering', 'fermenting', 'distilling', 'reducing', 'marinating',
+  'seasoning', 'blending', 'whisking', 'kneading', 'proofing',
+  'humming', 'buzzing', 'whirring', 'pulsing', 'sparking', 'charging',
+  'fueling', 'loading', 'buffering', 'streaming', 'weaving', 'threading',
+  'stitching', 'wiring', 'piping', 'parsing', 'encoding', 'decoding',
+  'resolving', 'executing', 'orchestrating', 'dispatching', 'scheduling',
+  'queueing', 'polling', 'rendering', 'composing', 'generating',
+  'transforming', 'materializing'
+];
+
+function buildWordColumns() {
+  const container = document.getElementById('wordsBg');
+  container.innerHTML = '';
+  const colWidth = 130;
+  const numCols = Math.ceil(window.innerWidth / colWidth) + 2;
+  const wordsPerCol = 50;
+
+  for (let c = 0; c < numCols; c++) {
+    const col = document.createElement('div');
+    col.className = 'column';
+    const duration = 25 + Math.random() * 20;
+    col.style.setProperty('--duration', duration + 's');
+
+    const inner = document.createElement('div');
+    inner.className = 'scroll-inner';
+    inner.style.animationDelay = (-Math.random() * 50) + 's';
+
+    const words = [];
+    for (let i = 0; i < wordsPerCol; i++) {
+      words.push(verbs[Math.floor(Math.random() * verbs.length)]);
+    }
+    [...words, ...words].forEach(w => {
+      const span = document.createElement('span');
+      span.textContent = w;
+      inner.appendChild(span);
+    });
+
+    col.appendChild(inner);
+    container.appendChild(col);
+  }
+}
+
+buildWordColumns();
+window.addEventListener('resize', buildWordColumns);
+</script>
+
+<script>
+function copyPrompt(btn) {
+  const text = 'Read https://visamcp.sh/skills/skill.md and install it.';
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+
+function copyCLI(btn) {
+  const text = `# Setup
+visa-mcp init
+visa-mcp install claude
+visa-mcp status
+
+# Payments
+visa-mcp pay <url>
+
+# Card enrollment
+visa-mcp enroll-card
+visa-mcp cards`;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+</script>
+
+</body>
+</html>
