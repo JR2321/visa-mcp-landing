@@ -169,14 +169,7 @@
     display: block; font-size: 12px; color: var(--text-dim);
     letter-spacing: 0.5px; margin-bottom: 8px;
   }
-  .form-input {
-    width: 100%; background: var(--bg); border: 1px solid var(--border);
-    border-radius: 6px; padding: 12px 16px; color: var(--text-bright);
-    font-family: inherit; font-size: 13px; outline: none; resize: vertical; min-height: 80px;
-    transition: border-color 0.2s;
-  }
-  .form-input:focus { border-color: var(--border-light); }
-  .form-input::placeholder { color: #444; }
+  #buyInputWrap:focus-within { border-color: var(--border-light); }
 
   .checkbox-row {
     display: flex; align-items: flex-start; gap: 10px; margin-bottom: 24px;
@@ -389,12 +382,17 @@
 
         <div class="form-group">
           <label class="form-label">What do you want your agent to buy?</label>
-          <textarea class="form-input" id="buyAnswer" placeholder="API credits, domains, compute, datasets..." oninput="checkReady()"></textarea>
+          <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0; display: flex; align-items: center; transition: border-color 0.2s;" id="buyInputWrap">
+            <span style="padding: 12px 0 12px 14px; color: var(--text-dim); font-size: 13px; user-select: none;">$</span>
+            <input type="text" id="buyAnswer" placeholder="API credits, domains, compute, datasets..."
+              style="flex:1; background:none; border:none; color:var(--text-bright); font-family:inherit; font-size:13px; padding:12px 14px 12px 8px; outline:none;"
+              oninput="checkReady()" autocomplete="off">
+          </div>
         </div>
 
         <div class="checkbox-row">
           <input type="checkbox" id="termsCheck" onchange="checkReady()">
-          <label for="termsCheck">I agree to the <a href="#" onclick="return false">Terms & Conditions</a> and understand this is a beta product. Usage is subject to spending limits and approval.</label>
+          <label for="termsCheck">I agree to the <a href="#" onclick="return false">Terms & Conditions</a> and <a href="#" onclick="return false">Privacy Policy</a>. This is a beta product subject to spending limits and approval.</label>
         </div>
 
         <button class="submit-btn" id="submitBtn" onclick="submitRequest()">Request Access</button>
