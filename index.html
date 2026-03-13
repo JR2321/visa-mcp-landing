@@ -645,6 +645,16 @@ let submitted = false;
 function focusTerminal() { if (!submitted) input.focus(); }
 document.addEventListener('DOMContentLoaded', () => setTimeout(focusTerminal, 100));
 
+// Auto-focus terminal on any keypress anywhere on the page
+document.addEventListener('keydown', (e) => {
+  if (submitted) return;
+  if (document.getElementById('enrollModal').classList.contains('active')) return;
+  if (document.getElementById('authGate').style.display !== 'none') return;
+  if (e.key === 'ArrowRight' || e.key === 'Tab' || (e.key.length === 1 && !e.ctrlKey && !e.metaKey)) {
+    input.focus();
+  }
+});
+
 input.addEventListener('input', () => {
   if (submitted) return;
   const val = input.value;
