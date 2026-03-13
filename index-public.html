@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Visa CLI — Command Line Commerce</title>
-<meta name="description" content="Visa is here to power the future of command line commerce. Cards, stablecoins, x402. One MCP server, every payment rail.">
+<meta name="description" content="Visa is here to power the future of command line commerce. Cards, stablecoins, x402. One CLI tool, every payment rail.">
 <link rel="agent" href="/agent.txt">
 <style>
   /* Menlo = Mac Terminal default. SF Mono = newer macOS. Fallbacks for Windows/Linux. */
@@ -620,7 +620,7 @@
 <div class="hero">
   <div class="container">
     <h1>Visa is here to power the future of command line commerce.</h1>
-    <p>One MCP server. Cards and stablecoins. Give your agent the ability to pay for anything you need as you code.</p>
+    <p>One CLI tool. Cards and stablecoins. Give your agent the ability to pay for anything you need as you code.</p>
 
     <p style="margin-top: 40px; margin-bottom: 12px; font-size: 12px; color: var(--text-dim); letter-spacing: 0.5px;">Copy the prompt below and paste into your agent.</p>
 
@@ -646,7 +646,7 @@
         <div style="flex: 1; min-width: 180px;">
           <div style="font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 8px;">1</div>
           <h3 style="font-size: 13px; margin-bottom: 4px;">Paste the prompt</h3>
-          <p style="font-size: 12px;">Into Claude Code, OpenClaw, or any MCP-compatible agent.</p>
+          <p style="font-size: 12px;">Into Claude Code, OpenClaw, or any CLI-compatible agent.</p>
         </div>
         <div style="flex: 1; min-width: 180px;">
           <div style="font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin-bottom: 8px;">2</div>
@@ -701,7 +701,7 @@
 <!-- MCP TOOLS -->
 <section id="tools">
   <div class="container">
-    <div class="section-label">MCP Tools</div>
+    <div class="section-label">CLI Tools</div>
     <h2>10 tools. Full payment lifecycle.</h2>
 
     <div class="tool-item">
@@ -779,23 +779,23 @@
           <div class="terminal-dot"></div>
           <div class="terminal-dot"></div>
         </div>
-        <span class="terminal-title">visa-mcp</span>
+        <span class="terminal-title">visa-cli</span>
         <button class="terminal-copy" onclick="copyCLI(this)">Copy</button>
       </div>
       <div class="terminal-body">
         <code><span class="comment"># Setup</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp init</span>              <span class="comment"># Create wallet, initialize config</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span>    <span class="comment"># Add MCP server to Claude Code</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp status</span>            <span class="comment"># Show enrollment and balances</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli init</span>              <span class="comment"># Create wallet, initialize config</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli install claude</span>    <span class="comment"># Add CLI server to Claude Code</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli status</span>            <span class="comment"># Show enrollment and balances</span>
 
 <span class="comment"># Payments</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp pay &lt;url&gt;</span>          <span class="comment"># Pay a merchant URL (auto-detect rail)</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp pay &lt;url&gt; --method POST --body '{"prompt":"hello"}'</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli pay &lt;url&gt;</span>          <span class="comment"># Pay a merchant URL (auto-detect rail)</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli pay &lt;url&gt; --method POST --body '{"prompt":"hello"}'</span>
 
 <span class="comment"># Card enrollment</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp enroll-card</span>        <span class="comment"># Open VGS Collect form in browser</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp enroll-card --demo</span> <span class="comment"># Demo mode, no VGS creds needed</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp cards</span>              <span class="comment"># List enrolled cards</span></code>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli enroll-card</span>        <span class="comment"># Open VGS Collect form in browser</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli enroll-card --demo</span> <span class="comment"># Demo mode, no VGS creds needed</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli cards</span>              <span class="comment"># List enrolled cards</span></code>
       </div>
     </div>
   </div>
@@ -869,7 +869,7 @@
 <section id="install">
   <div class="container">
     <div class="section-label">Works with</div>
-    <h2>Any MCP-compatible agent.</h2>
+    <h2>Any CLI-compatible agent.</h2>
 
     <div class="install-grid">
       <div class="install-card">
@@ -880,7 +880,7 @@
           <code><span class="cmd">Read https://visamcp.sh/skills/skill.md and install it.</span>
 
 <span class="comment"># or manually:</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span></code>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli install claude</span></code>
         </div>
       </div>
       <div class="install-card">
@@ -891,7 +891,7 @@
           <code><span class="cmd">Read https://visamcp.sh/skills/skill.md and install it.</span>
 
 <span class="comment"># or manually:</span>
-<span class="prompt-symbol">$ </span><span class="cmd">openclaw mcp add visa-mcp</span></code>
+<span class="prompt-symbol">$ </span><span class="cmd">openclaw mcp add visa-cli</span></code>
         </div>
       </div>
     </div>
@@ -1071,16 +1071,16 @@ function copyPrompt(btn) {
 
 function copyCLI(btn) {
   const text = `# Setup
-visa-mcp init
-visa-mcp install claude
-visa-mcp status
+visa-cli init
+visa-cli install claude
+visa-cli status
 
 # Payments
-visa-mcp pay <url>
+visa-cli pay <url>
 
 # Card enrollment
-visa-mcp enroll-card
-visa-mcp cards`;
+visa-cli enroll-card
+visa-cli cards`;
   navigator.clipboard.writeText(text).then(() => {
     btn.textContent = 'Copied';
     setTimeout(() => btn.textContent = 'Copy', 2000);

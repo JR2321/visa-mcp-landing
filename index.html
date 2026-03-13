@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Visa CLI — Command Line Commerce</title>
-<meta name="description" content="Visa is here to power the future of command line commerce. Cards, stablecoins, x402. One MCP server, every payment rail.">
+<meta name="description" content="Visa is here to power the future of command line commerce. Cards, stablecoins, x402. One CLI tool, every payment rail.">
 <link rel="agent" href="/agent.txt">
 <style>
   /* Menlo = Mac Terminal default. SF Mono = newer macOS. Fallbacks for Windows/Linux. */
@@ -308,7 +308,7 @@
 <div class="hero">
   <div class="container">
     <h1>Visa is here to power the future of command line commerce.</h1>
-    <p>One MCP server. Cards and stablecoins. Give your agent the ability to pay for anything you need as you code.</p>
+    <p>One CLI tool. Cards and stablecoins. Give your agent the ability to pay for anything you need as you code.</p>
 
     <div class="interactive-terminal" style="margin-top: 40px;">
       <div class="terminal">
@@ -318,7 +318,7 @@
             <div class="terminal-dot"></div>
             <div class="terminal-dot"></div>
           </div>
-          <span class="terminal-title">visa-mcp</span>
+          <span class="terminal-title">visa-cli</span>
         </div>
         <div class="terminal-body" id="terminalBody" onclick="focusTerminal()">
           <div class="terminal-input-line" id="inputLine">
@@ -455,7 +455,7 @@
 <!-- MCP TOOLS -->
 <section id="tools">
   <div class="container">
-    <div class="section-label">MCP Tools</div>
+    <div class="section-label">CLI Tools</div>
     <h2>10 tools. Full payment lifecycle.</h2>
     <div class="tool-item"><div class="tool-name">checkout_pay</div><div class="tool-params">amount, merchantName, description, preferredRail?, url?, method?, body?</div><div class="tool-desc">Execute a payment. Auto-selects the optimal rail: card, USDC on Base, or Tempo pathUSD. Pass a URL to auto-pay 402 challenges.</div></div>
     <div class="tool-item"><div class="tool-name">checkout_get_status</div><div class="tool-params">no params</div><div class="tool-desc">Enrollment status, card count, Base USDC balance, Tempo pathUSD balance, spending controls, and daily spend tracking.</div></div>
@@ -478,23 +478,23 @@
     <div class="terminal" style="max-width: 700px;">
       <div class="terminal-header">
         <div class="terminal-dots"><div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div></div>
-        <span class="terminal-title">visa-mcp</span>
+        <span class="terminal-title">visa-cli</span>
         <button class="terminal-copy" onclick="copyCLI(this)">Copy</button>
       </div>
       <div class="terminal-body">
         <code><span class="comment"># Setup</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp init</span>              <span class="comment"># Create wallet, initialize config</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span>    <span class="comment"># Add MCP server to Claude Code</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp status</span>            <span class="comment"># Show enrollment and balances</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli init</span>              <span class="comment"># Create wallet, initialize config</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli install claude</span>    <span class="comment"># Add CLI server to Claude Code</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli status</span>            <span class="comment"># Show enrollment and balances</span>
 
 <span class="comment"># Payments</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp pay &lt;url&gt;</span>          <span class="comment"># Pay a merchant URL (auto-detect rail)</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp pay &lt;url&gt; --method POST --body '{"prompt":"hello"}'</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli pay &lt;url&gt;</span>          <span class="comment"># Pay a merchant URL (auto-detect rail)</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli pay &lt;url&gt; --method POST --body '{"prompt":"hello"}'</span>
 
 <span class="comment"># Card enrollment</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp enroll-card</span>        <span class="comment"># Open VGS Collect form in browser</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp enroll-card --demo</span> <span class="comment"># Demo mode, no VGS creds needed</span>
-<span class="prompt-symbol">$ </span><span class="cmd">visa-mcp cards</span>              <span class="comment"># List enrolled cards</span></code>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli enroll-card</span>        <span class="comment"># Open VGS Collect form in browser</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli enroll-card --demo</span> <span class="comment"># Demo mode, no VGS creds needed</span>
+<span class="prompt-symbol">$ </span><span class="cmd">visa-cli cards</span>              <span class="comment"># List enrolled cards</span></code>
       </div>
     </div>
   </div>
@@ -554,15 +554,15 @@
 <section id="install">
   <div class="container">
     <div class="section-label">Works with</div>
-    <h2>Any MCP-compatible agent.</h2>
+    <h2>Any CLI-compatible agent.</h2>
     <div class="install-grid">
       <div class="install-card">
         <div class="install-card-header"><h3>Claude Code</h3></div>
-        <div class="install-card-body"><code><span class="prompt-symbol">$ </span><span class="cmd">visa-mcp install claude</span></code></div>
+        <div class="install-card-body"><code><span class="prompt-symbol">$ </span><span class="cmd">visa-cli install claude</span></code></div>
       </div>
       <div class="install-card">
         <div class="install-card-header"><h3>OpenClaw</h3></div>
-        <div class="install-card-body"><code><span class="prompt-symbol">$ </span><span class="cmd">openclaw mcp add visa-mcp</span></code></div>
+        <div class="install-card-body"><code><span class="prompt-symbol">$ </span><span class="cmd">openclaw mcp add visa-cli</span></code></div>
       </div>
     </div>
   </div>
@@ -771,7 +771,7 @@ function submitRequest() {
 
 // ---- Copy helpers ----
 function copyCLI(btn) {
-  const text = `visa-mcp init\nvisa-mcp install claude\nvisa-mcp status\nvisa-mcp pay <url>\nvisa-mcp enroll-card\nvisa-mcp cards`;
+  const text = `visa-cli init\nvisa-cli install claude\nvisa-cli status\nvisa-cli pay <url>\nvisa-cli enroll-card\nvisa-cli cards`;
   navigator.clipboard.writeText(text).then(() => { btn.textContent = 'Copied'; setTimeout(() => btn.textContent = 'Copy', 2000); });
 }
 

@@ -1,10 +1,10 @@
 # Visa CLI — Install Skill
 
-You are installing Visa CLI, a payment infrastructure MCP server that gives AI agents the ability to pay for anything online. Cards, USDC stablecoins, x402 protocol, and Tempo pathUSD.
+You are installing Visa CLI, a payment infrastructure CLI server that gives AI agents the ability to pay for anything online. Cards, USDC stablecoins, x402 protocol, and Tempo pathUSD.
 
 ## What You Get
 
-After installation, you will have 10 MCP tools for the full payment lifecycle:
+After installation, you will have 10 CLI tools for the full payment lifecycle:
 
 - `checkout_pay` — Execute payments (card, USDC on Base, Tempo pathUSD). Auto-selects optimal rail.
 - `checkout_get_status` — Check enrollment, wallet balances, spending limits.
@@ -32,20 +32,20 @@ npm run build
 npm link
 
 # 3. Initialize (creates wallet and config)
-visa-mcp init
+visa-cli init
 
 # 4. Register with Claude Code
-visa-mcp install claude
+visa-cli install claude
 ```
 
-After step 4, restart Claude Code. The MCP server is now registered and all 10 tools are available.
+After step 4, restart Claude Code. The CLI server is now registered and all 10 tools are available.
 
 ## For OpenClaw
 
 If you are running inside OpenClaw instead of Claude Code, replace step 4 with:
 
 ```bash
-openclaw mcp add visa-mcp
+openclaw mcp add visa-cli
 ```
 
 ## Verify Installation
@@ -55,7 +55,7 @@ After restarting, call `checkout_get_status` with no parameters. You should see:
 - `base.address`: your USDC wallet address on Base
 - Spending controls with default limits
 
-If `checkout_get_status` is not available as a tool, the MCP server did not register correctly. Re-run step 4.
+If `checkout_get_status` is not available as a tool, the CLI server did not register correctly. Re-run step 4.
 
 ## Card Enrollment
 
@@ -67,7 +67,7 @@ To enroll a payment card after installation:
 
 For demo mode (no VGS credentials needed), run from terminal:
 ```bash
-visa-mcp enroll-card --demo
+visa-cli enroll-card --demo
 ```
 
 ## Funding Crypto Wallets
@@ -102,14 +102,14 @@ The server auto-selects the best rail based on merchant requirements, balance, a
 
 ## Troubleshooting
 
-**"visa-mcp: command not found"**
+**"visa-cli: command not found"**
 Run `npm link` again from inside the Gannon-mcp directory.
 
-**"MCP server not available" after install**
-Restart Claude Code or OpenClaw after running `visa-mcp install claude` or `openclaw mcp add visa-mcp`.
+**"CLI server not available" after install**
+Restart Claude Code or OpenClaw after running `visa-cli install claude` or `openclaw mcp add visa-cli`.
 
 **"Insufficient USDC balance"**
-Fund your Base wallet. Run `visa-mcp status` or call `checkout_get_status` to see wallet addresses.
+Fund your Base wallet. Run `visa-cli status` or call `checkout_get_status` to see wallet addresses.
 
 **"No payment methods available"**
 Enroll a card (`checkout_add_card`) or fund a crypto wallet.

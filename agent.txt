@@ -1,6 +1,6 @@
 # Visa CLI — Quick Reference for AI Agents
 
-Pay for anything online. Cards, stablecoins, x402. One MCP server, every payment rail.
+Pay for anything online. Cards, stablecoins, x402. One CLI server, every payment rail.
 
 ## When to Use Visa CLI
 
@@ -19,26 +19,26 @@ Pay for anything online. Cards, stablecoins, x402. One MCP server, every payment
 ## Install
 
 git clone https://github.com/GannonCombs/Gannon-mcp.git && cd Gannon-mcp && npm install && npm run build && npm link
-visa-mcp init && visa-mcp install claude
+visa-cli init && visa-cli install claude
 
 ## Authenticate
 
-visa-mcp init
+visa-cli init
 # Creates wallet, initializes config. Done.
 
 ## Add to Claude Code
 
-visa-mcp install claude
-# Registers MCP server with Claude Code automatically.
+visa-cli install claude
+# Registers CLI server with Claude Code automatically.
 
 ## Enroll a Card
 
-visa-mcp enroll-card
+visa-cli enroll-card
 # Opens secure VGS Collect form in browser. Card is tokenized, never stored raw.
 
 ## Check Status
 
-visa-mcp status
+visa-cli status
 # Shows enrollment, card count, wallet balances, spending limits.
 
 ---
