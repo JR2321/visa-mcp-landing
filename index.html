@@ -440,41 +440,7 @@
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section id="architecture">
-  <div class="container">
-    <div class="section-label">Architecture</div>
-    <h2>How it works.</h2>
-    <div class="arch-diagram">
-      <pre>
-  You ── Agent ── MCP Server ── Payment Rail ── Done
-                     │
-           ┌─────────┼──────────────────┐
-           │         │                  │
-      VGS Card    USDC Wallet     Tempo Wallet
-       Vault     (Base Network)  (Path Network)
-           │         │                  │
-           ▼         ▼                  ▼
-     ┌───────────────────────────────────────┐
-     │          Payment Router               │
-     │  Auto-selects optimal rail based on:  │
-     │  • Merchant requirements              │
-     │  • Available balance                  │
-     │  • Transaction size                   │
-     │  • User preference                    │
-     └───────────────────────────────────────┘
-           │
-           ▼
-     ┌───────────────────────────────────────┐
-     │          Security Layer               │
-     │  • OS Keychain storage                │
-     │  • Biometric approval                 │
-     │  • Spending limits                    │
-     │  • Transaction logging                │
-     └───────────────────────────────────────┘</pre>
-    </div>
-  </div>
-</section>
+
 
 <!-- WORKS WITH -->
 <section id="install">
