@@ -442,49 +442,7 @@
 
 
 
-<!-- WORKS WITH -->
-<section id="install">
-  <div class="container">
-    <div class="section-label">Works with</div>
-    <h2>Any CLI-compatible agent.</h2>
-    <div class="install-grid">
-      <div class="install-card">
-        <div class="install-card-header"><h3>Claude Code</h3></div>
-        <div class="install-card-body"><code><span class="prompt-symbol">$ </span><span class="cmd">visa-cli install claude</span></code></div>
-      </div>
-      <div class="install-card">
-        <div class="install-card-header"><h3>OpenClaw</h3></div>
-        <div class="install-card-body"><code><span class="prompt-symbol">$ </span><span class="cmd">openclaw mcp add visa-cli</span></code></div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- SECURITY -->
-<section id="security">
-  <div class="container">
-    <div class="section-label">Security</div>
-    <h2>Your agent pays. Your credentials never leave your machine.</h2>
-    <p style="margin-bottom: 32px;">Visa CLI is designed so your agent can make payments without ever seeing your card number, private key, or password. Every transaction requires your approval. Every credential stays on your device.</p>
-    <div class="sec-grid">
-      <div class="sec-item"><div class="label">Card vault</div><div class="value">VGS PCI L1</div><div class="sec-desc">Cards tokenized by Very Good Security before they reach your machine. The agent only sees token aliases, never real card numbers.</div></div>
-      <div class="sec-item"><div class="label">Encryption</div><div class="value">AES-256-GCM</div><div class="sec-desc">Card data encrypted per-field with random IV. Decrypted only when you approve via biometric. The agent triggers the payment; you authorize it.</div></div>
-      <div class="sec-item"><div class="label">Credentials</div><div class="value">OS Keychain</div><div class="sec-desc">Stored in macOS Keychain, Windows Credential Manager, or Linux secret service. Never written to config files, env vars, or disk.</div></div>
-      <div class="sec-item"><div class="label">Approval</div><div class="value">Biometric</div><div class="sec-desc">Touch ID, Face ID, or Windows Hello required for every payment above your auto-approve threshold. No silent charges.</div></div>
-      <div class="sec-item"><div class="label">Spending controls</div><div class="value">Policy Engine</div><div class="sec-desc">Per-transaction caps, daily spending limits, and auto-approve thresholds. Your agent operates within boundaries you define.</div></div>
-      <div class="sec-item"><div class="label">Audit trail</div><div class="value">Full History</div><div class="sec-desc">Every transaction logged with amount, merchant, rail, and timestamp. Query your history anytime via CLI or MCP tool.</div></div>
-    </div>
-    <div style="margin-top: 32px; padding: 20px; border: 1px solid var(--border); border-radius: 8px;">
-      <div style="font-size: 12px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px;">What the agent cannot do</div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: var(--text-dim);">
-        <div>✕ See your card number</div>
-        <div>✕ Export or transfer your private keys</div>
-        <div>✕ Modify its own spending limits</div>
-        <div>✕ Make payments without biometric approval</div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- FOOTER -->
 <footer>
