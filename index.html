@@ -422,23 +422,7 @@
   </div>
 </section>
 
-<!-- MCP TOOLS -->
-<section id="tools">
-  <div class="container">
-    <div class="section-label">CLI Tools</div>
-    <h2>10 tools. Full payment lifecycle.</h2>
-    <div class="tool-item"><div class="tool-name">checkout_pay</div><div class="tool-params">amount, merchantName, description, preferredRail?, url?, method?, body?</div><div class="tool-desc">Execute a payment. Auto-selects the optimal rail: card, USDC on Base, or Tempo pathUSD. Pass a URL to auto-pay 402 challenges.</div></div>
-    <div class="tool-item"><div class="tool-name">checkout_get_status</div><div class="tool-params">no params</div><div class="tool-desc">Enrollment status, card count, Base USDC balance, Tempo pathUSD balance, spending controls, and daily spend tracking.</div></div>
-    <div class="tool-item"><div class="tool-name">checkout_get_cards</div><div class="tool-params">no params</div><div class="tool-desc">List all enrolled payment cards with token IDs, brand, last4, expiry, and default status.</div></div>
-    <div class="tool-item"><div class="tool-name">checkout_transaction_history</div><div class="tool-params">limit?</div><div class="tool-desc">Recent transactions with amounts, merchants, rails, timestamps. Includes aggregate stats: total transactions, total spent, last 30 days.</div></div>
-    <div class="tool-item"><div class="tool-name">checkout_update_spending_controls</div><div class="tool-params">maxTransactionAmount?, dailyLimit?, autoApproveUnder?</div><div class="tool-desc">Set per-transaction max, daily spending cap, and auto-approve threshold. Payments under the threshold skip approval prompts.</div></div>
-    <div class="tool-item"><div class="tool-name">checkout_add_card</div><div class="tool-params">no params</div><div class="tool-desc">Opens VGS Collect enrollment form in browser. Card is tokenized by VGS (PCI DSS L1). Only aliases stored locally.</div></div>
-    <div class="tool-item"><div class="tool-name">checkout_enroll_device</div><div class="tool-params">email?, phone?</div><div class="tool-desc">Start Click to Pay enrollment. Sends a one-time verification code to email or phone.</div></div>
-    <div class="tool-item"><div class="tool-name">checkout_verify_otp</div><div class="tool-params">otp, requestId</div><div class="tool-desc">Complete enrollment with the verification code received from checkout_enroll_device.</div></div>
-    <div class="tool-item"><div class="tool-name">checkout_login</div><div class="tool-params">no params</div><div class="tool-desc">GitHub OAuth login followed by secure card enrollment. Opens browser for the full auth flow.</div></div>
-    <div class="tool-item"><div class="tool-name">checkout_reset</div><div class="tool-params">confirm, retainCryptoKeys?</div><div class="tool-desc">Clear enrollment and credentials. retainCryptoKeys (default true) keeps wallet keys so funds are safe.</div></div>
-  </div>
-</section>
+
 
 <!-- CLI REFERENCE -->
 <section id="cli">
